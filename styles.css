@@ -59,7 +59,7 @@ img {
 /*** *Gameboard Styles ***/
 
 .gameboard.display_grid {
-    background-color: #fff;
+    background-color: #f0f0f0;
     width: min(30%, 100%);
     height: min(60%, 100%);
     display: grid;
