@@ -76,27 +76,27 @@ img {
     border: 0.15vw solid black;
 }
 
-.square:nth-child(1),
-.square:nth-child(2),
-.square:nth-child(3) {
+.block:nth-child(1),
+.block:nth-child(2),
+.block:nth-child(3) {
     border-top: none;
 }
 
-.square:nth-child(7),
-.square:nth-child(8),
-.square:nth-child(9) {
+.block:nth-child(7),
+.block:nth-child(8),
+.block:nth-child(9) {
     border-bottom: none;
 }
 
-.square:nth-child(1),
-.square:nth-child(4),
-.square:nth-child(7) {
+.block:nth-child(1),
+.block:nth-child(4),
+.block:nth-child(7) {
     border-left: none;
 }
 
-.square:nth-child(3),
-.square:nth-child(6),
-.square:nth-child(9) {
+.block:nth-child(3),
+.block:nth-child(6),
+.block:nth-child(9) {
     border-right: none;
 }
 
