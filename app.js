@@ -56,10 +56,6 @@ const gameBoardManager = (() => {
             newSpan.classList.add("marker", `${i + 1}`);
             newSpan.textContent = currBoard[i];
             allBlocks[i].appendChild(newSpan);
-
-            if (allBlocks[i].hasChildNodes()) {
-                continue;
-            }
         }
     };
 
@@ -91,13 +87,18 @@ const domManager = (() => {
     };
 
     const displayWinner = (player) => {
-        playerDiv.textContent = `Player ${player} wins!`;
+        playerDiv.textContent = `Player ${player} is the winner!`;
+    };
+
+    const displayDraw = () => {
+        playerDiv.textContent = "Game ended in a Draw.";
     };
 
     return {
         allBlocks,
         displayCurrPlayer,
         displayWinner,
+        displayDraw,
     };
 })();
 
@@ -153,6 +154,8 @@ const gameFlowManager = (() => {
                 domManager.allBlocks.forEach((block) =>
                     block.removeEventListener("click", playGame)
                 );
+            } else if (currBoard.every((position) => position !== "")) {
+                domManager.displayDraw();
             } else {
                 switchCurrentPlayer();
                 // Calls currMarker and dynamically changes it, on the DOM.
