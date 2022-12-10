@@ -11,26 +11,9 @@ const gameBoardManager = (() => {
     // Returns reference to board Arr
     const getBoard = () => board;
 
-    // Returns board Arr, after being cleared of values
-    const resetBoard = () => {
-        board = [];
-        board.push("", "", "", "", "", "", "", "", "");
-        return board;
-    };
-
-    return {
-        getBoard,
-        resetBoard,
-    };
-})();
-
-// domMananger module.
-const domManager = (() => {
-    // access to all div.block in DOM, as a nodelist.
-    const allBlocks = document.querySelectorAll(".block");
-
     const renderBoard = () => {
-        const currBoard = gameBoardManager.getBoard();
+        const currBoard = board;
+        const allBlocks = domManager.allBlocks;
 
         for (let i = 0; i < currBoard.length; i++) {
             const newSpan = document.createElement("span");
@@ -44,29 +27,52 @@ const domManager = (() => {
         }
     };
 
+    // Returns board Arr, after being cleared of values
+    const resetBoard = () => {
+        board = [];
+        board.push("", "", "", "", "", "", "", "", "");
+        return board;
+    };
+
+    return {
+        getBoard,
+        renderBoard,
+        resetBoard,
+    };
+})();
+
+// domMananger module.
+const domManager = (() => {
+    // access to all div.block in DOM, as a nodelist.
+    const allBlocks = document.querySelectorAll(".block");
+    // Access to player_div
+    const playerDiv = document.querySelector(".player_div");
+
+    const displayCurrPlayer = () => {
+        let currPlayer = playerDiv.querySelector(".player");
+        currPlayer.textContent = gameFlowManager.getMarker();
+    };
+
     return {
         allBlocks,
-        renderBoard,
+        displayCurrPlayer,
     };
 })();
 
 // GameFlow Module
 const gameFlowManager = (() => {
     // Initial GameBoard Render
-    domManager.renderBoard();
-
-    // Variables
-    let gameActive = true;
-    let currMarker = "X";
+    gameBoardManager.renderBoard();
 
     // Creates Players in GameFlow, allowing them to choose.
     const player1 = Player("P1", "X");
     const player2 = Player("P2", "O");
 
+    let gameActive = true;
+    let currMarker = player1.marker ? player1.marker : player2.marker;
+
     // Returns Marker reference.
-    const getMarker = () => {
-        return currMarker;
-    };
+    const getMarker = () => currMarker;
 
     const switchCurrentPlayer = () => {
         return currMarker === "X"
@@ -87,15 +93,16 @@ const gameFlowManager = (() => {
         } else {
             let currSpanID = currSpan.classList[1];
             let currIndexAccess = parseInt(currSpanID) - 1;
-
             // Updates board
             currBoard[currIndexAccess] = currMarker;
-
             // Adds the current marker to the board, visually, via domManager;
             currSpan.textContent = getMarker();
             switchCurrentPlayer();
+            // Calls currMarker and dynamically changes it, on the DOM.
+            domManager.displayCurrPlayer();
+            // Removes the event listener from current event target (singleton).
+            event.target.removeEventListener("click", playGame);
         }
-        console.log(currBoard);
     };
 
     domManager.allBlocks.forEach((block) => {
@@ -104,6 +111,8 @@ const gameFlowManager = (() => {
 
     return {
         getMarker,
-        switchCurrentPlayer,
     };
 })();
+
+// Must be called outside once, in order for player div > player info, to show contents.
+domManager.displayCurrPlayer();
