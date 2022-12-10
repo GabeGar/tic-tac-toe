@@ -5,11 +5,47 @@ const Player = (name, marker) => {
 
 // gameBoard module
 const gameBoardManager = (() => {
-    // Index 0 = first block div on board --- id=1,etc
     const board = ["", "", "", "", "", "", "", "", ""];
+    const winConditions = [
+        [0, 1, 2],
+        [0, 3, 6],
+        [0, 4, 8],
+        [1, 4, 7],
+        [2, 4, 6],
+        [2, 5, 8],
+        [3, 4, 5],
+        [6, 7, 8],
+    ];
 
-    // Returns reference to board Arr
     const getBoard = () => board;
+
+    const checkForPattern = (p1Mark, p2Mark) => {
+        const currBoard = board;
+
+        for (let cond of winConditions) {
+            let pos1 = cond[0];
+            let pos2 = cond[1];
+            let pos3 = cond[2];
+
+            let firstMark = currBoard[pos1];
+            let secMark = currBoard[pos2];
+            let thirdMark = currBoard[pos3];
+
+            if (
+                firstMark === p1Mark &&
+                secMark === p1Mark &&
+                thirdMark === p1Mark
+            ) {
+                return p1Mark;
+            } else if (
+                firstMark === p2Mark &&
+                secMark === p2Mark &&
+                thirdMark === p2Mark
+            ) {
+                return p2Mark;
+            }
+        }
+    };
 
     const renderBoard = () => {
         const currBoard = board;
@@ -36,6 +72,7 @@ const gameBoardManager = (() => {
 
     return {
         getBoard,
+        checkForPattern,
         renderBoard,
         resetBoard,
     };
@@ -53,9 +90,14 @@ const domManager = (() => {
         currPlayer.textContent = gameFlowManager.getMarker();
     };
 
+    const displayWinner = (player) => {
+        playerDiv.textContent = `Player ${player} wins!`;
+    };
+
     return {
         allBlocks,
         displayCurrPlayer,
+        displayWinner,
     };
 })();
 
@@ -68,7 +110,6 @@ const gameFlowManager = (() => {
     const player1 = Player("P1", "X");
     const player2 = Player("P2", "O");
 
-    let gameActive = true;
     let currMarker = player1.marker ? player1.marker : player2.marker;
 
     // Returns Marker reference.
@@ -97,11 +138,28 @@ const gameFlowManager = (() => {
             currBoard[currIndexAccess] = currMarker;
             // Adds the current marker to the board, visually, via domManager;
             currSpan.textContent = getMarker();
-            switchCurrentPlayer();
-            // Calls currMarker and dynamically changes it, on the DOM.
-            domManager.displayCurrPlayer();
-            // Removes the event listener from current event target (singleton).
-            event.target.removeEventListener("click", playGame);
+            // Checking for win pattern here, aim to return true/false for win codition.
+
+            // Always checking for a winning pattern
+            let checkWinner = gameBoardManager.checkForPattern(
+                player1.marker,
+                player2.marker
+            );
+
+            // Once a winner exists, announce and stop game.
+            if (checkWinner) {
+                let winner = checkWinner;
+                domManager.displayWinner(winner);
+                domManager.allBlocks.forEach((block) =>
+                    block.removeEventListener("click", playGame)
+                );
+            } else {
+                switchCurrentPlayer();
+                // Calls currMarker and dynamically changes it, on the DOM.
+                domManager.displayCurrPlayer();
+                // Removes the event listener from current event target (singleton).
+                event.target.removeEventListener("click", playGame);
+            }
         }
     };
 
