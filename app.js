@@ -3,29 +3,13 @@ const Player = (name, marker) => {
     return { name, marker };
 };
 
-// gameBoard revealing module
+// gameBoard module
 const gameBoardManager = (() => {
     // Index 0 = first block div on board --- id=1,etc
     const board = ["", "", "", "", "", "", "", "", ""];
 
     // Returns reference to board Arr
     const getBoard = () => board;
-
-    // Updates board before being rendered, by domManager.
-    const appendToBoard = (event) => {
-        // Taps into span child of containing target block div.
-        const currSpanMarker = event.target.querySelector("span");
-        let currentSpanNum = parseInt(currSpanMarker.classList[1]);
-        let currIndex = currentSpanNum - 1;
-
-        /*
-        Need to Tie marker to currentPlayer.
-        */
-        board[currIndex] = "O";
-
-        // Calls domManager to update the display, reflecting updated board.
-        domManager.renderBoard();
-    };
 
     // Returns board Arr, after being cleared of values
     const resetBoard = () => {
@@ -36,35 +20,26 @@ const gameBoardManager = (() => {
 
     return {
         getBoard,
-        appendToBoard,
         resetBoard,
     };
 })();
 
-// domMananger revealing module.
+// domMananger module.
 const domManager = (() => {
     // access to all div.block in DOM, as a nodelist.
     const allBlocks = document.querySelectorAll(".block");
 
     const renderBoard = () => {
-        // Retrieves current board, saving it in const variable.
         const currBoard = gameBoardManager.getBoard();
 
-        /*
-        Loops through both allBlocks NodeList & CurrBoard Elements,
-        using i, to tap into the index.
-         */
         for (let i = 0; i < currBoard.length; i++) {
-            if (allBlocks[i].textContent !== "") continue;
-            else {
-                /* 
-                Creates a newSpan, to add currBoard marker,
-                to the current block.
-                 */
-                const newSpan = document.createElement("span");
-                newSpan.classList.add("marker", `${i + 1}`);
-                newSpan.textContent = currBoard[i];
-                allBlocks[i].appendChild(newSpan);
+            const newSpan = document.createElement("span");
+            newSpan.classList.add("marker", `${i + 1}`);
+            newSpan.textContent = currBoard[i];
+            allBlocks[i].appendChild(newSpan);
+
+            if (allBlocks[i].hasChildNodes()) {
+                continue;
             }
         }
     };
@@ -77,19 +52,58 @@ const domManager = (() => {
 
 // GameFlow Module
 const gameFlowManager = (() => {
+    // Initial GameBoard Render
     domManager.renderBoard();
+
+    // Variables
     let gameActive = true;
+    let currMarker = "X";
 
     // Creates Players in GameFlow, allowing them to choose.
     const player1 = Player("P1", "X");
     const player2 = Player("P2", "O");
 
-    // Adds Event Listeners to allBlocks, handled by the gameBoardManager.
-    domManager.allBlocks.forEach((block) =>
-        block.addEventListener("click", gameBoardManager.appendToBoard)
-    );
+    // Returns Marker reference.
+    const getMarker = () => {
+        return currMarker;
+    };
+
+    const switchCurrentPlayer = () => {
+        return currMarker === "X"
+            ? (currMarker = player2.marker)
+            : (currMarker = player1.marker);
+    };
+
+    // Click event for players to place their markers
+    const playGame = (event) => {
+        // Retrieve reference from gameBoardManager.
+        const currBoard = gameBoardManager.getBoard();
+        // Dom access to marker span, via parent div.block.
+        let currSpan = event.target.querySelector(".marker");
+
+        // Prevents overriding of player markers
+        if (currSpan.textContent !== "") {
+            return;
+        } else {
+            let currSpanID = currSpan.classList[1];
+            let currIndexAccess = parseInt(currSpanID) - 1;
+
+            // Updates board
+            currBoard[currIndexAccess] = currMarker;
+
+            // Adds the current marker to the board, visually, via domManager;
+            currSpan.textContent = getMarker();
+            switchCurrentPlayer();
+        }
+        console.log(currBoard);
+    };
+
+    domManager.allBlocks.forEach((block) => {
+        block.addEventListener("click", playGame);
+    });
 
     return {
-        currentMarker,
+        getMarker,
+        switchCurrentPlayer,
     };
 })();
