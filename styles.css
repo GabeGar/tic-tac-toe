@@ -109,3 +109,15 @@ img {
     right: 0;
     left: 0;
 }
+
+/*** *Hidden Button Styles ***/
+.reset_btn {
+    font-size: 1.5vw;
+    padding: max(calc(1.5rem - 5px))
+}
+
+.hidden {
+    display: none;
+    width: 0;
+    height: 0;
+}
