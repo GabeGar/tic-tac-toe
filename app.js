@@ -59,18 +59,10 @@ const gameBoardManager = (() => {
         }
     };
 
-    // Returns board Arr, after being cleared of values
-    const resetBoard = () => {
-        board = [];
-        board.push("", "", "", "", "", "", "", "", "");
-        return board;
-    };
-
     return {
         getBoard,
         checkForPattern,
         renderBoard,
-        resetBoard,
     };
 })();
 
@@ -80,6 +72,7 @@ const domManager = (() => {
     const allBlocks = document.querySelectorAll(".block");
     // Access to player_div
     const playerDiv = document.querySelector(".player_div");
+    const resetBtn = document.querySelector(".reset_btn");
 
     const displayCurrPlayer = () => {
         let currPlayer = playerDiv.querySelector(".player");
@@ -94,8 +87,14 @@ const domManager = (() => {
         playerDiv.textContent = "Game ended in a Draw.";
     };
 
+    const showResetBtn = () => {
+        resetBtn.classList.remove("hidden");
+    };
+
     return {
         allBlocks,
+        resetBtn,
+        showResetBtn,
         displayCurrPlayer,
         displayWinner,
         displayDraw,
@@ -154,8 +153,10 @@ const gameFlowManager = (() => {
                 domManager.allBlocks.forEach((block) =>
                     block.removeEventListener("click", playGame)
                 );
+                domManager.showResetBtn();
             } else if (currBoard.every((position) => position !== "")) {
                 domManager.displayDraw();
+                domManager.showResetBtn();
             } else {
                 switchCurrentPlayer();
                 // Calls currMarker and dynamically changes it, on the DOM.
@@ -168,6 +169,11 @@ const gameFlowManager = (() => {
 
     domManager.allBlocks.forEach((block) => {
         block.addEventListener("click", playGame);
+    });
+
+    domManager.resetBtn.addEventListener("click", () => {
+        // Resets the script
+        location.reload();
     });
 
     return {
