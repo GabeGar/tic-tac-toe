@@ -9,7 +9,7 @@ Another TheOdinProject, project (word salad, I know :D ), complete.
 **_Skills_Learned_**
 
 1. IFFE (Immediately Invoked Func Exp.)
-2. JS Module/Revealing-Module Patterns
+2. JS Traditional Module/Revealing-Module Patterns
 3. JS Factory Pattern
 
 **_Thoughts_**
