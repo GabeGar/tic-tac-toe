@@ -9,16 +9,15 @@ Another TheOdinProject, project (word salad, I know :D ), complete.
 **_Skills_Learned_**
 
 1. IFFE (Immediately Invoked Func Exp.)
-2. JS Traditional Module/Revealing-Module Patterns
-3. JS Factory Pattern
+2. Closures (in detail)
+3. JS Traditional Module/Revealing-Module Patterns
+4. JS Factory Pattern
 
 **_Thoughts_**
 
-This project was very challenging. Syntax threw me off 100%
-Had to dig around the internet a bit more, than solely rely on the resources provided to me,
-via TheOdinProject.com; As well as, read up/watch a few more tutorials;
-Slowly but surely, it all began making sense. Especially, when getting my own hands dirty,
-with the code itself.
-
-While it was not easy to digest at first, doing the aforementioned,
-further deepened, my understanding of these learned patterns in JS.
+This project was challenging. Mainly, due to the concepts of IFFEs and closures,
+taking a bit longer for myself, to grasp.
+Slowly but surely, it all began making sense, after scouring for more resources,
+on the aforementioned subject matters, apart from what TheOdinProject provided.
+Putting the project together and getting my hands in on the code,
+definitely reinforced the concepts, as expected.
